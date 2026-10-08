@@ -35,7 +35,8 @@ people in to its CLI.
   from the App Launcher.
 - **How long a sign-in lasts:** Access's ID tokens expire after 5 minutes,
   whatever the access token lifetime. Set `refresh_token_lifetime`, such as
-  `7d`, and Access issues refresh tokens too (adding `offline_access`), which
+  `7d`, and Access issues refresh tokens too (adding the `refresh_tokens`
+  grant type, and `offline_access`), which
   the app trades for new ID tokens without signing in again, each checked
   against the policy. Keep it under the organization's session duration,
   which otherwise wins. Without one, a sign-in lasts 5 minutes.

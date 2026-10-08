@@ -105,6 +105,11 @@ run "keeps_a_sign_in_with_refresh_tokens" {
     condition     = cloudflare_zero_trust_access_application.this.saas_app.refresh_token_options.lifetime == "7d"
     error_message = "refresh_token_lifetime should set the refresh tokens' lifetime"
   }
+
+  assert {
+    condition     = tolist(cloudflare_zero_trust_access_application.this.saas_app.grant_types) == tolist(["authorization_code_with_pkce", "refresh_tokens"])
+    error_message = "refresh tokens need the refresh_tokens grant type"
+  }
 }
 
 run "rejects_a_refresh_token_lifetime_of_a_minute" {
