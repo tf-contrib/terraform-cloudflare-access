@@ -26,6 +26,7 @@ jobs:
         run: |
           nix develop --command sh -euc '
             for dir in . modules/*; do
+              [ -d "$dir" ] || continue # no modules: the glob stays as is
               echo "::group::$dir"
               tofu -chdir="$dir" init -backend=false
               tofu -chdir="$dir" validate
