@@ -47,46 +47,84 @@ run "is_a_public_pkce_client" {
   }
 }
 
-run "keeps_a_sign_in_for_a_working_day" {
+run "keeps_the_access_defaults" {
   command = plan
 
   assert {
-    condition     = cloudflare_zero_trust_access_application.this.saas_app.access_token_lifetime == "8h"
-    error_message = "a sign-in should last 8h by default, not Access's 5m"
+    condition     = cloudflare_zero_trust_access_application.this.saas_app.access_token_lifetime == "5m"
+    error_message = "the access token should last Access's default, 5m"
+  }
+
+  assert {
+    condition     = cloudflare_zero_trust_access_application.this.saas_app.refresh_token_options == null
+    error_message = "without refresh_token_lifetime, there should be no refresh tokens"
   }
 }
 
-run "takes_a_token_lifetime" {
+run "takes_an_access_token_lifetime" {
   command = plan
 
   variables {
-    token_lifetime = "30m"
+    access_token_lifetime = "30m"
   }
 
   assert {
     condition     = cloudflare_zero_trust_access_application.this.saas_app.access_token_lifetime == "30m"
-    error_message = "token_lifetime should set the access token lifetime"
+    error_message = "access_token_lifetime should set the access token lifetime"
   }
 }
 
-run "rejects_a_token_lifetime_over_a_day" {
+run "rejects_an_access_token_lifetime_over_a_day" {
   command = plan
 
   variables {
-    token_lifetime = "25h"
+    access_token_lifetime = "25h"
   }
 
-  expect_failures = [var.token_lifetime]
+  expect_failures = [var.access_token_lifetime]
 }
 
-run "rejects_a_token_lifetime_in_seconds" {
+run "rejects_an_access_token_lifetime_in_seconds" {
   command = plan
 
   variables {
-    token_lifetime = "300s"
+    access_token_lifetime = "300s"
   }
 
-  expect_failures = [var.token_lifetime]
+  expect_failures = [var.access_token_lifetime]
+}
+
+run "keeps_a_sign_in_with_refresh_tokens" {
+  command = plan
+
+  variables {
+    refresh_token_lifetime = "7d"
+  }
+
+  assert {
+    condition     = cloudflare_zero_trust_access_application.this.saas_app.refresh_token_options.lifetime == "7d"
+    error_message = "refresh_token_lifetime should set the refresh tokens' lifetime"
+  }
+}
+
+run "rejects_a_refresh_token_lifetime_of_a_minute" {
+  command = plan
+
+  variables {
+    refresh_token_lifetime = "1m"
+  }
+
+  expect_failures = [var.refresh_token_lifetime]
+}
+
+run "rejects_a_refresh_token_lifetime_in_weeks" {
+  command = plan
+
+  variables {
+    refresh_token_lifetime = "1w"
+  }
+
+  expect_failures = [var.refresh_token_lifetime]
 }
 
 run "lets_in_only_the_given_emails" {
