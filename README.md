@@ -21,7 +21,7 @@ creates nothing.
 Use a module by its path and a release:
 
 ```hcl
-module "access_oidc" {
+module "cloudflare_access_saas_oidc" {
   source = "git::https://github.com/tofu-contrib/terraform-cloudflare-access.git//modules/saas-oidc?ref=v0.1.0" # x-release-please-version
   # ...
 }
