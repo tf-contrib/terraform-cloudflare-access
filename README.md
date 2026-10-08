@@ -14,7 +14,21 @@ creates nothing.
 
 ## Modules
 
-None yet.
+| Module | What it creates |
+|---|---|
+| [`saas-oidc`](modules/saas-oidc) | An Access for SaaS OIDC application for a public client, such as a CLI or a native app, and the policy that says who may sign in. Outputs its issuer and client ID. |
+
+Use a module by its path and a release:
+
+```hcl
+module "access_oidc" {
+  source = "git::https://github.com/tofu-contrib/terraform-cloudflare-access.git//modules/saas-oidc?ref=v0.1.0" # x-release-please-version
+  # ...
+}
+```
+
+Every module is released together, on one version. Before 1.0, a minor
+version may change inputs; the changelog says how.
 
 ## Development
 
