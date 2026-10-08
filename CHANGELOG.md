@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/tf-contrib/terraform-cloudflare-access/compare/v0.2.0...v0.2.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* grant refresh tokens their grant type ([#5](https://github.com/tf-contrib/terraform-cloudflare-access/issues/5)) ([d18c30e](https://github.com/tf-contrib/terraform-cloudflare-access/commit/d18c30ef0f03aa3c3a307c3011aac531704e9406))
+
 ## [0.2.0](https://github.com/tf-contrib/terraform-cloudflare-access/compare/v0.1.0...v0.2.0) (2026-10-08)
 
 
