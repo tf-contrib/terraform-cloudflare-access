@@ -1,7 +1,7 @@
 # terraform-cloudflare-access
 
-[![CI](https://github.com/tofu-contrib/terraform-cloudflare-access/actions/workflows/ci.yml/badge.svg)](https://github.com/tofu-contrib/terraform-cloudflare-access/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/tofu-contrib/terraform-cloudflare-access?include_prereleases)](https://github.com/tofu-contrib/terraform-cloudflare-access/releases)
+[![CI](https://github.com/tf-contrib/terraform-cloudflare-access/actions/workflows/ci.yml/badge.svg)](https://github.com/tf-contrib/terraform-cloudflare-access/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/tf-contrib/terraform-cloudflare-access?include_prereleases)](https://github.com/tf-contrib/terraform-cloudflare-access/releases)
 [![License](https://img.shields.io/badge/License-MPL--2.0-brightgreen.svg)](LICENSE)
 [![OpenTofu](https://img.shields.io/badge/OpenTofu-compatible-FFDA18?logo=opentofu&logoColor=black)](https://opentofu.org)
 
@@ -22,7 +22,7 @@ Use a module by its path and a release:
 
 ```hcl
 module "cloudflare_access_saas_oidc" {
-  source = "git::https://github.com/tofu-contrib/terraform-cloudflare-access.git//modules/saas-oidc?ref=v0.1.0" # x-release-please-version
+  source = "git::https://github.com/tf-contrib/terraform-cloudflare-access.git//modules/saas-oidc?ref=v0.1.0" # x-release-please-version
   # ...
 }
 ```
