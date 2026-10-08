@@ -1,0 +1,56 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v23
+      - name: Check Formatting
+        run: nix develop --command tofu fmt -check -recursive
+      # The root module, then each module under modules/: a new one is
+      # validated, and tested if it has tests/, without editing this.
+      - name: Validate and Test Modules
+        run: |
+          nix develop --command sh -euc '
+            for dir in . modules/*; do
+              echo "::group::$dir"
+              tofu -chdir="$dir" init -backend=false
+              tofu -chdir="$dir" validate
+              if [ -d "$dir/tests" ]; then tofu -chdir="$dir" test; fi
+              echo "::endgroup::"
+            done
+          '
+
+  release:
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Create Release PR
+        uses: googleapis/release-please-action@v5
+        with:
+          manifest-file: .github/config/release-please-manifest.json
+          config-file: .github/config/release-please-config.json
+          target-branch: main
