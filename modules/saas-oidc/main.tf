@@ -27,9 +27,11 @@ resource "cloudflare_zero_trust_access_application" "this" {
     redirect_uris                    = var.redirect_uris
     scopes                           = var.scopes
 
-    # Access's default, 5m, has people signing in again every five minutes:
-    # its ID tokens expire with its access tokens.
-    access_token_lifetime = var.token_lifetime
+    access_token_lifetime = var.access_token_lifetime
+
+    # Access's ID tokens last 5 minutes, whatever the access token lifetime:
+    # refresh tokens are what keep a sign-in longer.
+    refresh_token_options = var.refresh_token_lifetime == null ? null : { lifetime = var.refresh_token_lifetime }
   }
 
   policies = [

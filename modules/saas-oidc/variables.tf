@@ -43,18 +43,33 @@ variable "emails" {
   }
 }
 
-variable "token_lifetime" {
+variable "access_token_lifetime" {
   type        = string
-  description = "How long a sign-in lasts: the application's access token lifetime, which its ID tokens follow. Minutes or hours, from 1m to 24h. Access's own default is 5m."
-  default     = "8h"
+  description = "The application's access token lifetime, minutes or hours from 1m to 24h: Access's own default is 5m. It doesn't make a sign-in last longer: Access's ID tokens expire after 5 minutes whatever it is. For that, set refresh_token_lifetime."
+  default     = "5m"
 
   validation {
     # In minutes, 1 to 1440: a malformed value isn't a number of them at all.
     condition = try(alltrue([
-      for minutes in [tonumber(regex("^([0-9]+)[mh]$", var.token_lifetime)[0]) * (endswith(var.token_lifetime, "h") ? 60 : 1)] :
+      for minutes in [tonumber(regex("^([0-9]+)[mh]$", var.access_token_lifetime)[0]) * (endswith(var.access_token_lifetime, "h") ? 60 : 1)] :
       minutes >= 1 && minutes <= 1440
     ]), false)
-    error_message = "token_lifetime must be minutes or hours, such as 30m or 8h, from 1m to 24h."
+    error_message = "access_token_lifetime must be minutes or hours, such as 30m or 8h, from 1m to 24h."
+  }
+}
+
+variable "refresh_token_lifetime" {
+  type        = string
+  description = "How long a sign-in lasts, minutes, hours or days, longer than 1m, such as 7d: Access then issues refresh tokens (it adds the offline_access scope), which the app trades for new ID tokens without signing in again, each checked against the policy. Keep it under the organization's session duration, which otherwise wins. null issues none, and a sign-in lasts as long as its ID token, 5 minutes."
+  default     = null
+
+  validation {
+    # In minutes, over 1: a malformed value isn't a number of them at all.
+    condition = var.refresh_token_lifetime == null || try(alltrue([
+      for minutes in [tonumber(regex("^([0-9]+)[mhd]$", var.refresh_token_lifetime)[0]) * lookup({ m = 1, h = 60, d = 1440 }, substr(var.refresh_token_lifetime, -1, 1))] :
+      minutes > 1
+    ]), false)
+    error_message = "refresh_token_lifetime must be minutes, hours or days longer than 1m, such as 8h or 7d, or null."
   }
 }
 

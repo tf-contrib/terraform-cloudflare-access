@@ -32,9 +32,13 @@ people in to its CLI.
   proves itself with PKCE (`authorization_code_with_pkce`, with
   `allow_pkce_without_client_secret`), so it has no secret to keep. Access
   sends the code only to `redirect_uris`, and grants `scopes`. It's hidden
-  from the App Launcher. A sign-in lasts `token_lifetime`, 8h by default:
-  Access's ID tokens expire with its access tokens, whose own default, 5m,
-  would have people sign in again every five minutes.
+  from the App Launcher.
+- **How long a sign-in lasts:** Access's ID tokens expire after 5 minutes,
+  whatever the access token lifetime. Set `refresh_token_lifetime`, such as
+  `7d`, and Access issues refresh tokens too (adding `offline_access`), which
+  the app trades for new ID tokens without signing in again, each checked
+  against the policy. Keep it under the organization's session duration,
+  which otherwise wins. Without one, a sign-in lasts 5 minutes.
 - **Its policy:** the `emails` you give, and no one else, can sign in.
 - **The issuer:** each Access for SaaS OIDC application is its own,
   `https://<team_name>.cloudflareaccess.com/cdn-cgi/access/sso/oidc/<client_id>`.
@@ -68,7 +72,8 @@ one.
 | `name` | yes | | The application's name, shown at sign-in, and its policy's prefix. |
 | `redirect_uris` | yes | | Where Access may send the code: the app's callback. At least one. |
 | `emails` | yes | | Who may sign in. At least one. |
-| `token_lifetime` | no | `8h` | How long a sign-in lasts, `1m` to `24h`. Access's ID tokens expire with its access tokens. |
+| `refresh_token_lifetime` | no | `null` | How long a sign-in lasts, with refresh tokens, such as `7d`. `null` issues none: 5 minutes. |
+| `access_token_lifetime` | no | `5m` | The access token's lifetime, `1m` to `24h`. Not the ID token's, which is 5 minutes. |
 | `identity_provider_ids` | no | `[]` | The login methods allowed, by ID. Empty allows every one. |
 | `scopes` | no | `["openid", "email", "profile"]` | The scopes the application grants. |
 
@@ -83,8 +88,8 @@ one.
 ## Notes
 
 - Tried end to end against Access, with one-time PIN: its ID tokens carry
-  `email`, `sub`, and the application's `iss`, and with Access's default access
-  token lifetime they expired after 5 minutes.
+  `email`, `sub`, and the application's `iss`, and expire after 5 minutes, with
+  the access token lifetime at 5m and at 8h alike.
 - `tofu test` plans the module with a mocked provider: the application's
   settings, the policy, the login methods, and the input checks. Access
   assigns the client ID, so the issuer built from it is Cloudflare's
