@@ -8,7 +8,7 @@
 
 ```hcl
 module "cloudflare_access_saas_oidc" {
-  source = "git::https://github.com/tf-contrib/terraform-cloudflare-access.git//modules/saas-oidc?ref=v0.1.0" # x-release-please-version
+  source = "git::https://github.com/tf-contrib/terraform-cloudflare-access.git//modules/saas-oidc?ref=v0.2.0" # x-release-please-version
 
   account_id    = var.account_id
   team_name     = "example" # example.cloudflareaccess.com
