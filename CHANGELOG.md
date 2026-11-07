@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/tf-contrib/terraform-cloudflare-access/compare/v0.2.1...v0.2.2) (2026-11-07)
+
+
+### Bug Fixes
+
+* **ci:** merge with the App token so main gets its CI run ([#12](https://github.com/tf-contrib/terraform-cloudflare-access/issues/12)) ([911d178](https://github.com/tf-contrib/terraform-cloudflare-access/commit/911d178fa2bd082197d6f56f6398dcff8986bf67))
+
 ## [0.2.1](https://github.com/tf-contrib/terraform-cloudflare-access/compare/v0.2.0...v0.2.1) (2026-10-08)
 
 
